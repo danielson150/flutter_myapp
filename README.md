@@ -1,6 +1,6 @@
 # myapp
 
-A new Flutter project.
+Projeto criado para disciplina de TÓPICOS ESPECIAIS EM DESENVOLVIMENTO MÓVEL-IFPI
 
 ## Getting Started
 
