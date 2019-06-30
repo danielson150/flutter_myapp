@@ -1,71 +1,74 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-void main() => runApp(AnimatedContainerApp());
+void main() => runApp(MyApp());
 
-class AnimatedContainerApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _AnimatedContainerAppState createState() => _AnimatedContainerAppState();
+  Widget build(BuildContext context) {
+    final appTitle = 'Form Validation Demo';
+
+    return MaterialApp(
+      title: appTitle,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(appTitle),
+        ),
+        body: MyCustomForm(),
+      ),
+    );
+  }
 }
 
-class _AnimatedContainerAppState extends State<AnimatedContainerApp> {
-  // Define the various properties with default values. Update these properties
-  // when the user taps a FloatingActionButton.
-  double _width = 50;
-  double _height = 50;
-  Color _color = Colors.green;
-  BorderRadiusGeometry _borderRadius = BorderRadius.circular(8);
+// Create a Form widget.
+class MyCustomForm extends StatefulWidget {
+  @override
+  MyCustomFormState createState() {
+    return MyCustomFormState();
+  }
+}
+
+// Create a corresponding State class.
+// This class holds data related to the form.
+class MyCustomFormState extends State<MyCustomForm> {
+  // Create a global key that uniquely identifies the Form widget
+  // and allows validation of the form.
+  //
+  // Note: This is a GlobalKey<FormState>,
+  // not a GlobalKey<MyCustomFormState>.
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('AnimatedContainer Demo'),
-        ),
-        body: Center(
-          child: AnimatedContainer(
-            // Use the properties stored in the State class.
-            width: _width,
-            height: _height,
-            decoration: BoxDecoration(
-              color: _color,
-              borderRadius: _borderRadius,
-            ),
-            // Define how long the animation should take.
-            duration: Duration(seconds: 1),
-            // Provide an optional curve to make the animation feel smoother.
-            curve: Curves.fastOutSlowIn,
+    // Build a Form widget using the _formKey created above.
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Enter some text';
+              }
+              return null;
+            },
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.play_arrow),
-          // When the user taps the button
-          onPressed: () {
-            // Use setState to rebuild the widget with new values.
-            setState(() {
-              // Create a random number generator.
-              final random = Random();
-
-              // Generate a random width and height.
-              _width = random.nextInt(300).toDouble();
-              _height = random.nextInt(300).toDouble();
-
-              // Generate a random color.
-              _color = Color.fromRGBO(
-                random.nextInt(256),
-                random.nextInt(256),
-                random.nextInt(256),
-                1,
-              );
-
-              // Generate a random border radius.
-              _borderRadius =
-                  BorderRadius.circular(random.nextInt(100).toDouble());
-            });
-          },
-        ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: RaisedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, or false
+                // otherwise.
+                if (_formKey.currentState.validate()) {
+                  // If the form is valid, display a Snackbar.
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ),
+        ],
       ),
     );
   }
